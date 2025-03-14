@@ -1,0 +1,118 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Data Syncing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #20bcaf;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .navbar {
+            width: 100%;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            text-align: left;
+        }
+
+        .navbar img {
+            width: 150px;
+        }
+
+        .load-container {
+            margin-top: 50px;
+        }
+
+        .load-container img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #20bcaf;
+            padding: 5px;
+        }
+
+        .animated-text {
+            font-size: 18px;
+            font-weight: bold;
+            opacity: 0;
+            font-family: Sans-serif;
+            animation: fadeIn 3s forwards;
+        }
+
+        h2 {
+            font-family: Sans-serif;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            function refreshContent() {
+                $.ajax({
+                    url: window.location.href,  // Fetch the current page content
+                    type: 'GET',
+                    dataType: 'html',
+                    success: function (data) {
+                        var newContent = $(data).find("body").html();  // Extract new content
+                        $("body").html(newContent);  // Replace the existing content
+                    },
+                    error: function () {
+                        console.error("Failed to refresh content.");
+                    }
+                });
+            }
+    
+            // Auto refresh the content every 1 minute
+            setInterval(refreshContent, 60000);  // 60,000ms = 1 minute
+        });
+    </script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#">
+            <img src="{% static 'images/icclogo.png' %}" alt="ICC Logo">
+        </a>
+    </nav>
+
+    <div class="load-container">
+        <img src="{% static 'images/data_loading.jpg' %}" alt="New Update">
+    </div>
+
+    <h2 class="animated-text">The database is currently being updated with your most recent batch. Please wait while we sync the data. The UI will be available shortly.</h2>
+
+    <div class="loader"></div>
+
+</body>
+</html>
